@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>轮播图</title>
+    <script src="jQuery/jquery-1.9.1/jquery.min.js"></script>
+    <style type="text/css">
+        *{
+            margin: 0;padding: 0;
+        }
+        li{list-style: none;}
+        a{text-decoration: none;}
+        #main{
+            width: 500px;height: 300px;margin: 100px auto;
+            border: 1px solid red;position: relative;
+            overflow: hidden;
+        }
+        #main .inner{
+            width: 2500px;height: 300px;position: absolute;
+            /*left: -500px;*/
+        }
+        .inner img{
+            width: 500px;height: 300px;
+            float: left;
+        }
+        .btn .item{
+            position: absolute;
+            right: 0px;bottom: 15px;
+            width: 150px;height: 10px;
+            z-index: 2;
+        }
+        .btn .item span{
+            color: #ffffff;background-color: gray;display: inline-block;
+            cursor: pointer;width:20px;height: 20px;margin-right: 5px;
+            float: left;text-align: center;
+            border-radius:50%;
+        }
+        .btn .item span.on{background-color: red;}
+        #btnLeft,#btnRight{
+            position: absolute;color: darkorange;
+            top: 40%;font-size: 50px;
+        }
+        #btnLeft{
+            left: 10px;
+        }
+        #btnRight{
+            right: 10px;
+        }
+        #btnLeft:hover,#btnRight:hover{
+            opacity: 0.6;cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="main">
+        <div class="inner">
+           <img src="img/1.jpg" alt=""/>
+           <img src="img/2.jpg" alt=""/>
+           <img src="img/3.jpg" alt=""/>
+           <img src="img/4.jpg" alt=""/>
+           <img src="img/5.jpg" alt=""/>
+        </div>
+        <div class="btn">
+            <div id="btnLeft">&lt;</div>
+            <div id="btnRight">&gt;</div>
+            <div class="item">
+                <span class="on">1</span>
+                <span>2</span>
+                <span>3</span>
+                <span>4</span>
+                <span>5</span>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function(){
+//            数字图标点击播放开始
+            var index = 0;
+            var dots = document.getElementsByTagName("span");
+            var len = dots.length;
+            function showCurrentDot(){
+                for(var i = 0;i<len;i++){
+                    dots[i].className = "";
+                }
+                dots[index].className = "on";
+            }
+            for(let i=0;i<len;i++){
+                dots[i].onclick = function(){
+                    var dis = index - i;
+                    var newLeft = parseInt($(".inner").css("left")) + dis * 500;
+                    $(".inner").css("left",newLeft);
+                    index = i;
+                    showCurrentDot();
+                }
+            }
+//            for(var i=0;i<len;i++){
+//                (function(){
+//                    dots[i].onclick = function(){
+//                        var dis = index - i;
+//                        if(index==4 && parseInt($(".inner").css("left")) !== -2000){
+//                            dis = dis - 5;
+//                        }
+//                        var newLeft = parseInt($(".inner").css("left")) + dis * 500;
+//                        $(".inner").css("left",newLeft);
+//                        index = i;
+//                        showCurrentDot();
+//                    }
+//                })(i);
+//            }
+//            数字图标点击播放结束
+//            自动循环播放开始
+            var timer = null;
+            function autoPlay(){
+                timer = setInterval(function(){
+                    next_pic();
+                },1000);
+            }
+            autoPlay();
+            $("#main").mouseover(function(){
+              clearInterval(timer);
+            });
+            $("#main").mouseout(function(){
+                autoPlay();
+            });
+//            自动循环播放结束
+
+//            手动点击循环播放开始
+            function next_pic(){
+               var newLeft = parseInt($(".inner").css("left"))-500;
+               if($(".inner").css("left")==="-2000px"){
+                   newLeft = 0;
+               }
+                index++;
+                if(index>4){
+                    index = 0;
+                }
+               showCurrentDot();
+               $(".inner").css("left",newLeft);
+            }
+            function prev_pic(){
+                var newLeft = parseInt($(".inner").css("left"))+500;
+                if($(".inner").css("left")==="0px"){
+                    newLeft = -2000;
+                }
+                index--;
+                if(index<0){
+                    index = 4;
+                }
+                showCurrentDot();
+                $(".inner").css("left",newLeft);
+            }
+            $("#btnRight").click(function(){
+                next_pic();
+            });
+            $("#btnLeft").click(function(){
+                prev_pic();
+            });
+//            手动点击循环播放结束
+        });
+    </script>
+</body>
+</html>
